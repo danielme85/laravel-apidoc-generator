@@ -64,6 +64,15 @@ trait ParamHelpers
             return false;
         }
 
+        // Secondly, let's support arrays. They are amazing.
+        if ($type == 'array') {
+            if ($array = @json_decode($value, true)) {
+                if (is_array($array)) {
+                    return $array;
+                }
+            }
+        }
+
         if (isset($casts[$type])) {
             return $casts[$type]($value);
         }

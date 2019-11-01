@@ -19,7 +19,12 @@ $response = $client->{{ strtolower($route['methods'][0]) }}("{{ rtrim($baseUrl, 
 @if(!empty($route['cleanBodyParameters']))
     'json' => [
     @foreach($route['cleanBodyParameters'] as $parameter => $value)
-        "{{$parameter}}" => "{{$value}}",
+        @if(is_array($value))
+        "{{$parameter}}" => [@foreach($value as $arrayValue)"{{{$arrayValue}}}", @endforeach]
+        @else
+        "{{$parameter}}" => "{{{$value}}}",
+        @endif
+
     @endforeach
     ],
 @endif

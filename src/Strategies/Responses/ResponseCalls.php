@@ -11,6 +11,7 @@ use Mpociot\ApiDoc\Tools\Flags;
 use Mpociot\ApiDoc\Tools\Utils;
 use Mpociot\ApiDoc\Strategies\Strategy;
 use Mpociot\ApiDoc\Tools\Traits\ParamHelpers;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * Make a call to the route and retrieve its response.
@@ -254,7 +255,16 @@ class ResponseCalls extends Strategy
      */
     private function addBodyParameters(Request $request, array $body)
     {
-        $request->request->add($body);
+        if (!empty($body)) {
+           if ($request->format() === 'json') {
+               $bag = new ParameterBag();
+               $bag->add($body);
+
+               $request->setJson($bag);
+           } else {
+               $request->request->add($body);
+           }
+        }
 
         return $request;
     }
